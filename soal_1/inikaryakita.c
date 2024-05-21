@@ -129,7 +129,7 @@ static int porto_rename(const char *from, const char *to) {
     if (res == -1)
         return -errno;
 
-    if (strstr(to, "/wm/") != NULL) {
+    if (strstr(to, "/wm") != NULL) {
         add_watermark(full_path_to);
     }
 
