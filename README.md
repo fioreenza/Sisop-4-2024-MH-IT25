@@ -171,7 +171,7 @@ Adfi merupakan seorang CEO agency creative bernama Ini Karya Kita. Ia sedang mel
     }
     
     
-    static struct fuse_operations reversefs_oper = {
+    static struct fuse_operations porto_oper = {
         .getattr = porto_getattr,
         .read = porto_read,
         .open = porto_open,
@@ -182,12 +182,152 @@ Adfi merupakan seorang CEO agency creative bernama Ini Karya Kita. Ia sedang mel
     
     
     int main(int argc, char *argv[]) {
-        return fuse_main(argc, argv, &reversefs_oper, NULL);
+        return fuse_main(argc, argv, &porto_oper, NULL);
     }
 
 ### Penjelasan Soal 1
 
-### Kendala Pengerjaan Soal 1
+    static const char *dir_path = "/home/fio/portofolio";
+Mendefinisikan path dasar untuk file sistem yang akan di-mount. 
+
+    void reverse_content(char *content) {
+        int len = strlen(content);
+        for (int i = 0; i < len / 2; i++) {
+            char temp = content[i];
+            content[i] = content[len - i - 1];
+            content[len - i - 1] = temp;
+        }
+    }
+Fungsi reverse_content membalikkan isi string yang diberikan. Fungsi ini menerima parameter char *content, menghitung panjang string dengan strlen(content), dan menggunakan loop untuk menukar karakter dari depan dan belakang hingga mencapai tengah string. Penukaran karakter dilakukan dengan menggunakan variabel sementara temp.
+
+    static int porto_getattr(const char *path, struct stat *stbuf) {
+        int res;
+        char full_path[1024];
+        snprintf(full_path, sizeof(full_path), "%s%s", dir_path, path);
+        res = lstat(full_path, stbuf);
+        if (res == -1)
+            return -errno;
+        return 0;
+    }
+Fungsi porto_getattr digunakan untuk mendapatkan atribut file atau direktori. Fungsi ini menerima path dari file atau direktori, menggabungkannya dengan dir_path untuk membentuk path lengkap, dan kemudian memanggil fungsi lstat untuk mendapatkan atribut file tersebut dan menyimpannya dalam struktur stat. Jika lstat gagal, fungsi mengembalikan nilai kesalahan yang sesuai menggunakan -errno.
+
+    static int porto_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
+        int fd;
+        int res;
+        char full_path[1024];
+        snprintf(full_path, sizeof(full_path), "%s%s", dir_path, path);
+    
+        (void) fi;
+        fd = open(full_path, O_RDONLY);
+        if (fd == -1)
+            return -errno;
+    
+        res = pread(fd, buf, size, offset);
+        if (res == -1)
+            res = -errno;
+    
+        close(fd);
+    
+        if (strncmp(path, "/bahaya/test", 12) == 0) {
+            reverse_content(buf);
+        }
+    
+        return res;
+    }
+Fungsi porto_read bertanggung jawab untuk membaca isi file. Path file digabungkan dengan dir_path untuk mendapatkan path lengkap, dan file dibuka dalam mode read-only menggunakan open. Setelah file berhasil dibuka, fungsi pread digunakan untuk membaca sejumlah byte tertentu dari file mulai dari offset tertentu dan menyimpannya dalam buffer buf. Jika file yang dibaca adalah /bahaya/test, isi buffer kemudian dibalik menggunakan fungsi reverse_content. Akhirnya, file descriptor ditutup dan jumlah byte yang dibaca atau kesalahan dikembalikan.
+
+    static int porto_open(const char *path, struct fuse_file_info *fi) {
+        char full_path[1024];
+        snprintf(full_path, sizeof(full_path), "%s%s", dir_path, path);
+    
+        if (strcmp(path, "/bahaya/script.sh") == 0) {
+            chmod(full_path, 0755);
+        }
+    
+        int res = open(full_path, fi->flags);
+        if (res == -1)
+            return -errno;
+    
+        close(res);
+        return 0;
+    }
+Fungsi porto_open digunakan untuk membuka file. Path file lengkap dibentuk dengan menggabungkan dir_path dan path. Jika file yang dibuka adalah /bahaya/script.sh, izin file diubah menjadi executable (0755) menggunakan chmod. File kemudian dibuka dengan flag yang ditentukan dalam struktur fuse_file_info, dan jika berhasil, file descriptor segera ditutup karena FUSE tidak memerlukan file tetap terbuka. Fungsi mengembalikan 0 jika berhasil atau nilai kesalahan jika gagal membuka file.
+
+    static int porto_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
+        DIR *dp;
+        struct dirent *de;
+        char full_path[1024];
+    
+        snprintf(full_path, sizeof(full_path), "%s%s", dir_path, path);
+        dp = opendir(full_path);
+        if (dp == NULL)
+            return -errno;
+    
+        while ((de = readdir(dp)) != NULL) {
+            struct stat st;
+            memset(&st, 0, sizeof(st));
+            st.st_ino = de->d_ino;
+            st.st_mode = de->d_type << 12;
+            if (filler(buf, de->d_name, &st, 0))
+                break;
+        }
+    
+        closedir(dp);
+        return 0;
+    }
+Fungsi porto_readdir digunakan untuk membaca isi direktori. Jalur direktori lengkap dibentuk dan direktori dibuka menggunakan opendir. Setiap entri dalam direktori dibaca menggunakan readdir, dan informasi tentang setiap entri diisi dalam struktur stat. Nama file dan atributnya kemudian ditambahkan ke buffer menggunakan fungsi filler. Setelah semua entri dibaca, direktori ditutup dan fungsi mengembalikan 0 jika berhasil atau nilai kesalahan jika gagal.
+
+    void add_watermark(const char *image_path) {
+        char command[1024];
+        snprintf(command, sizeof(command), "convert %s -pointsize 36 -fill white -gravity South -annotate +0+10 'inikaryakita.id' %s", image_path, image_path);
+        system(command);
+    }
+Fungsi add_watermark menambahkan watermark pada gambar menggunakan ImageMagick. Fungsi ini menerima path gambar sebagai parameter, lalu menjalankan ImageMagick menggunakan convert untuk menambahkan watermark 'inikaryakita.id' pada gambar, dan menjalankan perintah tersebut menggunakan system. Perintah convert menambahkan teks watermark pada bagian bawah gambar.
+
+    static int porto_mkdir(const char *path, mode_t mode) {
+        char full_path[1024];
+        snprintf(full_path, sizeof(full_path), "%s%s", dir_path, path);
+    
+        int res = mkdir(full_path, mode);
+        if (res == -1)
+            return -errno;
+    
+        return 0;
+    }
+Fungsi porto_mkdir digunakan untuk membuat direktori baru. Path direktori lengkap dibentuk dengan menggabungkan dir_path dan path, dan direktori dibuat menggunakan fungsi mkdir dengan mode yang ditentukan. Jika berhasil, fungsi mengembalikan 0, dan jika gagal, fungsi mengembalikan nilai kesalahan yang sesuai.
+
+    static int porto_rename(const char *from, const char *to) {
+        char full_path_from[1024];
+        char full_path_to[1024];
+        snprintf(full_path_from, sizeof(full_path_from), "%s%s", dir_path, from);
+        snprintf(full_path_to, sizeof(full_path_to), "%s%s", dir_path, to);
+    
+        int res = rename(full_path_from, full_path_to);
+        if (res == -1)
+            return -errno;
+    
+        if (strstr(to, "/wm") != NULL) {
+            add_watermark(full_path_to);
+        }
+    
+        return 0;
+    }
+Fungsi porto_rename bertanggung jawab untuk mengganti nama file atau direktori. Path lengkap untuk file/direktori sumber dan file/direktori tujuan dibentuk, dan fungsi rename digunakan untuk mengganti nama. Jika file atau direktori tujuan memiliki '/wm' dalam namanya, fungsi add_watermark dipanggil untuk menambahkan watermark pada file tersebut. Fungsi ini mengembalikan 0 jika berhasil atau nilai kesalahan jika gagal mengganti nama file atau direktori.
+
+    static struct fuse_operations porto_oper = {
+        .getattr = porto_getattr,
+        .read = porto_read,
+        .open = porto_open,
+        .readdir = porto_readdir,
+        .mkdir = porto_mkdir,
+        .rename = porto_rename, 
+    };
+Struktur fuse_operations mendefinisikan operasi yang didukung oleh file system ini. Operasi yang didefinisikan meliputi getattr, read, open, readdir, mkdir, dan rename. Setiap operasi dihubungkan dengan fungsi yang sesuai yang telah diimplementasikan sebelumnya.
+
+    int main(int argc, char *argv[]) {
+        return fuse_main(argc, argv, &porto_oper, NULL);
+    }
+Fungsi main adalah titik masuk program yang menjalankan FUSE dengan operasi yang telah didefinisikan dalam porto_oper. Fungsi ini memanggil fuse_main dengan argumen yang diteruskan dari command line, dan mengembalikan hasil dari fuse_main. Fungsi ini menginisialisasi dan menjalankan file system FUSE dengan operasi yang telah didefinisikan, memungkinkan pengguna untuk berinteraksi dengan file system yang dibuat di user space.
 
 ### Screenshot Hasil Pengerjaan Soal 1
 
