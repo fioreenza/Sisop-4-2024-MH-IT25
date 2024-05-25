@@ -1389,7 +1389,142 @@ e. [discoveries.zip](https://drive.google.com/file/d/1BJkaBvGaxqiwPWvXRdYNXzxxmI
 
 ### Kendala Pengerjaan Soal 3
 
-* Pada point ke 3 soal b
+* Pada point ke 3 soal b:
+
+  ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/0a9b33b4-3613-4850-807d-57e8a02fc233)
+
+  Seharusnya file `sample_img.jpg` tersebut terpecah di directory relics, seperti ini:
+
+  ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/907d14be-402b-45b9-a4ae-f237b8ac49b4)
+
+  - Penyelesaian
+
+        Memodifikasi kode bagian fungsi `do_create`, berikut kode setelah dimodifikasi:
+
+            static int do_create(const char *path, mode_t mode, struct fuse_file_info *fi) {
+                struct file_node *new_file = malloc(sizeof(struct file_node));
+                strcpy(new_file->name, path + 1);
+                new_file->size = 0;
+                new_file->content[0] = '\0';
+                new_file->next = file_list;
+                file_list = new_file;
+
+                char src_file_path[1024];
+                char dst_file_path[1024];
+                snprintf(src_file_path, sizeof(src_file_path), "%s%s", dir_path, path);
+                snprintf(dst_file_path, sizeof(dst_file_path), "%s/%s", dir_path, path + 1);
+
+                int res = do_copy(path, path + 1, mode);
+                if (res == 0) {
+                    split_file(path + 1, NULL, 0);
+                }
+
+                return res;
+            }
+
+        Dalam modifikasi ini, setelah membuat file kosong di direktori FUSE mount, kode akan memanggil fungsi `do_copy` untuk menyalin file dari direktori sumber (dalam kasus Anda, `sample_img.jpg`) ke direktori `relics`. Kemudian, fungsi `split_file` dipanggil dengan `content` diatur ke `NULL` dan `size` diatur ke `0`, yang akan memaksa fungsi `split_file` untuk membaca isi file dari fragmen-fragmennya di direktori `relics`.
+
+    - Hasil Modifikasi
+
+        ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/992e7005-d02c-43b8-b26a-78f5bdfae7ff)
+
+* Pada point ke 5 soal b:
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/b72d7cf5-85aa-4c6c-a938-ff0c04d3bccf)
+
+    Seharusnya file sample_img.jpg tersebut dapat dihapus di directory FUSE mount (kecap)
+
+    - Penyelesaian
+
+        Menambahkan fungsi pada kode yaitu fungsi `do_unlink`, seperti ini:
+
+            static int do_unlink(const char *path) {
+                struct file_node *file = find_file(path);
+                if (!file) {
+                    return -ENOENT;
+                }
+
+                // Remove the file node from the linked list
+                struct file_node *current = file_list;
+                struct file_node *prev = NULL;
+                while (current) {
+                    if (current == file) {
+                        if (prev) {
+                            prev->next = current->next;
+                        } else {
+                            file_list = current->next;
+                        }
+                        break;
+                    }
+                    prev = current;
+                    current = current->next;
+                }
+
+                // Remove the file and its fragments from the relics directory
+                char file_path[1024];
+                snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, file->name);
+                unlink(file_path);
+
+                size_t chunk_num = 0;
+                while (1) {
+                    snprintf(file_path, sizeof(file_path), "%s/%s.%03zu", dir_path, file->name, chunk_num);
+                    if (unlink(file_path) == -1) {
+                        if (errno == ENOENT) {
+                            break;
+                        }
+                        return -errno;
+                    }
+                    chunk_num++;
+                }
+
+                free(file);
+
+                return 0;
+            }
+
+        Fungsi do_unlink ini melakukan beberapa hal:
+
+        * Mencari node file dalam linked list file_list.
+        
+        * Menghapus node file dari linked list.
+        
+        * Menghapus file utama dari direktori relics.
+        
+        * Menghapus semua fragmen file dari direktori relics.
+        
+        * Membebaskan memori yang dialokasikan untuk node file.
+
+                static struct fuse_operations operations = {
+                    .getattr = do_getattr,
+                    .readdir = do_readdir,
+                    .open = do_open,
+                    .read = do_read,
+                    .create = do_create,
+                    .write = do_write,
+                    .truncate = do_truncate,
+                    .unlink = do_unlink, // Tambahkan baris ini
+                };
+
+    - Hasil Modifikasi
+
+        ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/fe5e6ed1-bc01-417e-8457-94c19002f714)
 
 ### Screenshot Hasil Pengerjaan Soal 3
 
+* Soal b point 1:
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/86f8bef7-03ab-4775-bd19-22dfc1905593)
+
+* Soal b point 2:
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/68e97b2b-c13b-4766-ad48-60ad826a2e4d)
+
+* Soal b point 3 dan 4:
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/992e7005-d02c-43b8-b26a-78f5bdfae7ff)
+
+* Soal b point 5:
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/fe5e6ed1-bc01-417e-8457-94c19002f714)
+
+* Soal c:
