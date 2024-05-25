@@ -32,12 +32,27 @@ Pada Praktikum Modul 4 ini, kami diberikan tugas untuk mengerjakan Soal Shift Mo
 
 **oleh Wira Samudra Siregar (5027231041)**
 
-### Deskripsi Soal 1
+### Deskripsi Soal 2
 
-### Penyelesaian Soal 1
+### Penyelesaian Soal 2
 
-### Penjelasan Soal 1
+### Penjelasan Soal 2
 
-### Kendala Pengerjaan Soal 1
+### Kendala Pengerjaan Soal 2
 
-### Screenshot Hasil Pengerjaan Soal 1
+### Screenshot Hasil Pengerjaan Soal 2
+
+## Soal 3
+
+**oleh**
+
+### Deskripsi Soal 3
+
+### Penyelesaian Soal 3
+
+### Penjelasan Soal 3
+
+### Kendala Pengerjaan Soal 3
+
+### Screenshot Hasil Pengerjaan Soal 3
+
