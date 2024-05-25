@@ -1528,3 +1528,21 @@ e. [discoveries.zip](https://drive.google.com/file/d/1BJkaBvGaxqiwPWvXRdYNXzxxmI
     ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/fe5e6ed1-bc01-417e-8457-94c19002f714)
 
 * Soal c:
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/20399610-9b2d-4c1f-bbbd-1654d7ac1b4c)
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/e7fb793b-0f32-492c-a379-97b60e20e732)
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/6b00e9e7-9ce4-40a5-996a-6815e27f7d39)
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/bc7d5bd5-ceee-4e57-85b9-6b2aa6eb8edc)
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/3a6b9794-9d0e-425f-9bda-8ad7abbe1ff4)
+
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/81655ce5-beb9-466d-82ec-977915c56620)
+
+
+
+
+
+
