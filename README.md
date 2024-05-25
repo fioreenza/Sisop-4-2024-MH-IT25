@@ -578,15 +578,15 @@ b. Direktori **[nama_bebas]** adalah direktori FUSE dengan direktori asalnya ada
 
 - Ketika dilakukan listing, isi dari direktori **[nama_bebas]** adalah semua relic dari relics yang telah tergabung.
 
-    ![alt text](image.png)
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/120b0ab4-15aa-41a2-8eb9-3d0d5a48d166)
 
 - Ketika dilakukan copy (dari direktori **[nama_bebas]** ke tujuan manapun), file yang disalin adalah file dari direktori **relics** yang sudah tergabung.
 
-    ![alt text](image-1.png)
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/8f48fac6-2a67-401d-8a44-7b1a119a8656)
 
 - Ketika ada file dibuat, maka pada direktori asal (direktori **relics**) file tersebut akan dipecah menjadi sejumlah pecahan dengan ukuran maksimum tiap pecahan adalah 10kb.
 
-    ![alt text](image-2.png)
+    ![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/30cf055b-7a00-46de-8b3f-cb90dfe69ae1)
 
 - File yang dipecah akan memiliki nama **[namafile].000** dan seterusnya sesuai dengan jumlah pecahannya.
 
@@ -594,7 +594,8 @@ b. Direktori **[nama_bebas]** adalah direktori FUSE dengan direktori asalnya ada
 
 c. Direktori **report** adalah direktori yang akan dibagikan menggunakan Samba File Server. Setelah kalian berhasil membuat direktori **[nama_bebas]**, jalankan FUSE dan salin semua isi direktori **[nama_bebas]** pada direktori **report**.
 
-![alt text](image-3.png)
+![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/144349814/ec30db9c-b16c-43c7-ace2-fa2d9d8ceb3c)
+
 
 d. Catatan:
 
