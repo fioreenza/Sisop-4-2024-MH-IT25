@@ -330,6 +330,16 @@ Struktur fuse_operations mendefinisikan operasi yang didukung oleh file system i
 Fungsi main adalah titik masuk program yang menjalankan FUSE dengan operasi yang telah didefinisikan dalam porto_oper. Fungsi ini memanggil fuse_main dengan argumen yang diteruskan dari command line, dan mengembalikan hasil dari fuse_main. Fungsi ini menginisialisasi dan menjalankan file system FUSE dengan operasi yang telah didefinisikan, memungkinkan pengguna untuk berinteraksi dengan file system yang dibuat di user space.
 
 ### Screenshot Hasil Pengerjaan Soal 1
+Memberikan watermark ketika gambar di-move/di-rename ke folder dengan prefix "wm"
+<img width="713" alt="Screenshot 2024-05-25 at 22 38 20" src="https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/147926732/a751e95c-dabf-4a40-a13d-21a3d2133e14">
+<img width="632" alt="Screenshot 2024-05-25 at 22 39 04" src="https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/147926732/26a6f6c8-b79b-47b3-b760-61b96500b123">
+
+File script.sh bisa dijalankan 
+<img width="717" alt="Screenshot 2024-05-25 at 22 40 03" src="https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/147926732/11e1b8d6-c5a3-4d41-8ec9-681ca71af355">
+
+Reverse isi file yang memiliki nama dengan prefix "test"
+<img width="727" alt="Screenshot 2024-05-25 at 22 39 43" src="https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/147926732/f436849d-6133-46c7-86db-d0353ecfa48f">
+
 
 ## Soal 2
 
