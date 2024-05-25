@@ -566,7 +566,18 @@ Pada folder "pesan" Adfi ingin meningkatkan kemampuan sistemnya dalam mengelola 
 
 ### Kendala Pengerjaan Soal 2
 
+* Tidak berhasil membuat program menjadi berbasi FUSE, hanya bisa men-decode file.txt saja.
+* Belum membuat sebuah sistem keamanan khusus untuk folder "rahasia-berkas" menggunakan FUSE.  
+
 ### Screenshot Hasil Pengerjaan Soal 2
+* hasil decode `enkripsi_rot13.txt`
+![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/145766477/0d84d239-daf7-4908-ad83-7a8e1d85455d)
+* hasil decode `new-hex.txt`
+![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/145766477/5e3d1e59-4c6d-4076-8c45-58c57352374d)
+* hasil decode `notes-base64.txt`
+![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/145766477/e7c7aa17-2f21-4337-b260-356c3a421e10)
+* hasil decode `rev-text.txt`
+![image](https://github.com/fioreenza/Sisop-4-2024-MH-IT25/assets/145766477/d5931d6c-0fdd-424e-a773-1fae51084ea9)
 
 ## Soal 3
 
