@@ -452,6 +452,103 @@ Pada folder "pesan" Adfi ingin meningkatkan kemampuan sistemnya dalam mengelola 
     }
 
 ### Penjelasan Soal 2
+    #include <stdio.h>
+    #include <string.h>
+    #include <stdlib.h>
+    #include <ctype.h>
+    #include <openssl/bio.h>
+    #include <openssl/evp.h>
+* Program ini menggunakan beberapa header file seperti `stdio.h` untuk operasi input/output, `string.h` untuk manipulasi string, `stdlib.h` untuk alokasi memori dan konversi tipe data, `ctype.h` untuk klasifikasi dan manipulasi karakter, serta `openssl/bio.h` dan `openssl/evp.h` dari library OpenSSL untuk operasi kriptografi.
+
+      static char *decode_base64(const char *input) {
+      BIO *bio, *b64;
+      char *buffer = malloc(strlen(input) + 1);
+
+      bio = BIO_new_mem_buf((void *)input, -1);
+      b64 = BIO_new(BIO_f_base64());
+      bio = BIO_push(b64, bio);
+
+      BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL);
+      BIO_read(bio, buffer, strlen(input));
+      BIO_free_all(bio);
+
+      return buffer;
+      }
+* Fungsi `_decode_base64` adalah sebuah fungsi dalam program yang bertanggung jawab untuk melakukan dekode atau decoding terhadap string yang diberikan dalam format Base64. Fungsi ini menggunakan library OpenSSL untuk melakukan operasi dekode. `b64 = BIO_new(BIO_f_base64());` Baris ini membuat objek BIO baru menggunakan fungsi `BIO_new` dari OpenSSL dengan tipe `BIO_f_base64()` yang merupakan tipe BIO untuk melakukan dekode Base64.
+
+      static char *decode_rot13(const char *input) {
+      char *buffer = strdup(input);
+
+      for (size_t i = 0; i < strlen(buffer); ++i) {
+        if (isalpha(buffer[i])) {
+            if (islower(buffer[i])) {
+                buffer[i] = (buffer[i] - 'a' + 13) % 26 + 'a';
+            } else {
+                buffer[i] = (buffer[i] - 'A' + 13) % 26 + 'A';
+            }
+        }
+      }
+
+      return buffer;
+      }
+* Fungsi `_decode_rot13` adalah sebuah fungsi dalam program yang bertanggung jawab untuk melakukan dekode terhadap string yang telah dienkode menggunakan algoritma ROT13. ROT13 adalah teknik enkripsi sederhana yang menggeser setiap huruf dalam alfabet sebanyak 13 posisi. Fungsi `islower` memeriksa apakah karakter saat ini adalah huruf kecil atau huruf besar, Jika karakter adalah huruf kecil, maka karakter tersebut digeser sebanyak 13 posisi dalam rentang 'a' hingga 'z' menggunakan operasi `(buffer[i] - 'a' + 13) % 26 + 'a';`, Jika karakter adalah huruf besar, maka menggunakan operasI `(buffer[i] - 'A' + 13) % 26 + 'A'`.
+
+      static char *decode_hex(const char *input) {
+      size_t len = strlen(input);
+      char *buffer = malloc(len / 2 + 1);
+
+      for (size_t i = 0, j = 0; i < len; i += 2, ++j) {
+        sscanf(input + i, "%2hhx", &buffer[j]);
+      }
+
+      return buffer;
+      }
+* Fungsi `_decode_hex` adalah sebuah fungsi dalam program yang bertanggung jawab untuk melakukan dekode terhadap string dalam format heksadesimal. Fungsi ini melakukan iterasi pada setiap pasangan karakter heksadesimal dalam string input menggunakan loop `for`. Untuk setiap pasangan karakter heksadesimal, fungsi menggunakan fungsi `sscanf` untuk mengonversi pasangan tersebut menjadi byte dan menyimpannya dalam buffer hasil dekode.
+
+      static char *reverse_text(const char *input) {
+      size_t len = strlen(input);
+      char *buffer = malloc(len + 1);
+
+      for (size_t i = 0; i < len; ++i) {
+        buffer[i] = input[len - i - 1];
+      }
+      buffer[len] = '\0';
+
+      return buffer;
+      }
+* Fungsi `_reverse_text` adalah sebuah fungsi dalam program yang bertanggung jawab untuk membalikkan urutan karakter dalam sebuah string. Inti dari Fungsi ini ada pada `buffer[i] = input[len - i - 1];` Baris ini melakukan pembalikan urutan karakter dengan menyalin karakter dari string input ke buffer dalam urutan terbalik. Hasil pembalikan disimpan dalam buffer yang dialokasikan secara dinamis, dengan ukuran yang sama dengan panjang string asli ditambah satu byte untuk karakter null terminator.
+
+      int main(int argc, char *argv[]) {
+      if (argc != 3) {
+      fprintf(stderr, "Usage: %s <filename> <file_content>\n", argv[0]);
+      return 1;
+      }
+
+      const char *filename = argv[1];
+      const char *file_content = argv[2];
+
+      char *decoded_content = NULL;
+
+      if (strstr(filename, "base64") != NULL) {
+        decoded_content = decode_base64(file_content);
+      } else if (strstr(filename, "rot13") != NULL) {
+        decoded_content = decode_rot13(file_content);
+      } else if (strstr(filename, "hex") != NULL) {
+        decoded_content = decode_hex(file_content);
+      } else if (strstr(filename, "rev") != NULL) {
+        decoded_content = reverse_text(file_content);
+      } else {
+        fprintf(stderr, "Unsupported file type\n");
+        return 1;
+      }
+
+      printf("Decoded content:\n%s\n", decoded_content);
+
+      free(decoded_content);
+
+      return 0;
+      }
+* Fungsi `main` adalah inti dari program yang menerima argumen baris perintah berupa `<nama file>` dan `<isi file>`.  Jika argumen valid, nama file dan konten file disimpan dalam variabel terpisah. Kemudian, fungsi memeriksa ekstensi atau tipe file berdasarkan nama file menggunakan fungsi `strstr`. Berdasarkan tipe file yang cocok antara `base64`, `rot13`, `hex`, `rev`, selain itu `Unsupported file type` fungsi dekode yang sesuai dipanggil dengan konten file sebagai argumen, dan hasilnya disimpan dalam variabel `decoded_content`.
 
 ### Kendala Pengerjaan Soal 2
 
